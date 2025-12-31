@@ -14,6 +14,7 @@ public class Feedback {
 
 	
 
+	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long feedid;
