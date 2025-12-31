@@ -19,8 +19,7 @@ public class Admin {
 	private String email;
 	@Column
 	private String password;
-	@Column
-	private String role;
+	
 	public long getAdminid() {
 		return adminid;
 	}
@@ -45,12 +44,7 @@ public class Admin {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public String getRole() {
-		return role;
-	}
-	public void setRole(String role) {
-		this.role = role;
-	}
+	
 	
 	
 	

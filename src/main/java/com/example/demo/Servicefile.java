@@ -52,9 +52,14 @@ public Coach coachsign(String email,String password) {
 public void addAthlete(Athelet a) {
 	athr.save(a);
 }
-public void addCoach(Coach a) {
+public void addcoachbyadid(Coach a,long id) {
+	Admin ad=adr.findById(id).orElseThrow(()-> new RuntimeException("Id not found"));
+	a.setAdid(ad);
 	chr.save(a);
 }
+//public void addCoach(Coach a) {
+//	chr.save(a);
+//}
 
 public List<Athelet> getAllAthelet(){
 	return athr.findAll();
@@ -81,4 +86,41 @@ Optional<Athelet> getAllAthelet(long id){
 Optional<Coach> getAllCoach(long id){
 	return chr.findById(id);
 }
+
+public void deletecoachbyid(long id) {
+	if (chr.existsById(id)) {
+		chr.deleteById(id);
+	}else {
+		System.out.println("Coach id not found");
+	}
+	
+}
+public Coach updatecoachbyid(long id,Coach c){
+	Coach ch=chr.findById(id).orElseThrow(()->new RuntimeException("Id not found"));
+	ch.setName(c.getName());
+	ch.setEmail(c.getEmail());
+	ch.setPassword(c.getPassword());
+	ch.setAge(c.getAge());
+	ch.setSpecialization(c.getSpecialization());
+	ch.setExperience(c.getExperience());
+	return chr.save(ch);
+	
+}
+
+public void Assigendid(long aid,long cid) {
+	
+		Coach ch=chr.findById(cid).orElseThrow(()->new RuntimeException("Coach not found"));
+		Athelet a=athr.findById(aid).orElseThrow(()->new RuntimeException("Athelet not found"));
+		a.setCoachid(ch);
+//		ch.setAth(a);
+		
+		athr.save(a);
+	
+}
+//public Athelet getProfile(String email) {
+//    return athr
+//            .findByEmail(email)
+//            .orElseThrow(() ->
+//                new RuntimeException("User not found"));
+//}
 }

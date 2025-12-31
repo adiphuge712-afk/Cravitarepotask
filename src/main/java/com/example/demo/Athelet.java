@@ -26,6 +26,7 @@ public class Athelet {
 	@Column
 	private String sporttype;
 	@ManyToOne
+	
 	@JoinColumn(name = "coachid")
 	private Coach coachid;
 	public long getAthid() {

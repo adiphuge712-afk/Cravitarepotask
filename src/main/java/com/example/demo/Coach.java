@@ -17,6 +17,8 @@ public class Coach {
 private long coachid;
 	@Column
 private String name;
+	@Column
+private long age;
 	@Column(unique=true)
 private String email;
 	@Column
@@ -67,7 +69,18 @@ public Admin getAdid() {
 public void setAdid(Admin adid) {
 	this.adid = adid;
 }
+
+public long getAge() {
+	return age;
+}
+public void setAge(long age) {
+	this.age = age;
+}
+
 @ManyToOne
 @JoinColumn(name = "adminid")
 private Admin adid;
+
+
+
 }

@@ -30,6 +30,8 @@ public class Traningplan {
 	@ManyToOne
 	@JoinColumn(name = "coachid")
 	private Coach coachid;
+	
+	
 	public long getPlanid() {
 		return planid;
 	}
@@ -66,6 +68,8 @@ public class Traningplan {
 	public void setCoachid(Coach coachid) {
 		this.coachid = coachid;
 	}
+	
+	
 	
 
 }

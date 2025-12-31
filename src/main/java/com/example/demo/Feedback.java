@@ -48,14 +48,6 @@ public class Feedback {
 	public void setAthid(Athelet athid) {
 		this.athid = athid;
 	}
-	public Coach getCoachid() {
-		return coachid;
-	}
-	public void setCoachid(Coach coachid) {
-		this.coachid = coachid;
-	}
-	@ManyToOne
-	@JoinColumn(name = "coachid")
-	private Coach coachid;
+
 	
 }

@@ -46,8 +46,8 @@
 			<artifactId>spring-boot-starter-webmvc-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
-		
+
+
 		
 		<!-- New Added -->
 		<dependency>
@@ -64,9 +64,8 @@
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
 		</dependency>
-		
-		
-		
+
+
 		
 	</dependencies>
 
