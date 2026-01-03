@@ -24,8 +24,10 @@ public class Traningplan {
 	@Column
 	private String plantype;
 	@Column
+	
 	private LocalDate startdate;
 	@Column
+	
 	private LocalDate enddate;
 	@ManyToOne
 	@JoinColumn(name = "coachid")

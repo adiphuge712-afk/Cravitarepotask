@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,8 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173"
-)
+//@CrossOrigin(origins = "http://localhost:5173")
 public class Mycontroller {
 //	@Autowired
 //	JwtUtil jwtUtil;
@@ -145,10 +143,21 @@ public class Mycontroller {
 		}
 	}
 	
+	
 	@GetMapping("/viewDataWorkdril")
 	public ResponseEntity<List<Workdirl>> viewDataWorkdril(){
 		try {
 			List<Workdirl> data=ss.getAllWorkdril();
+			return ResponseEntity.ok(data);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+	}
+//by coach id
+	@GetMapping("/viewDataWorkdrilByCoachid/{id}")
+	public ResponseEntity<List<Workdirl>> viewDataWorkdrilByCoachid(@PathVariable long id){
+		try {
+			List<Workdirl> data=ss.getAllWorkdrilByCoachid(id);
 			return ResponseEntity.ok(data);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -163,7 +172,17 @@ public class Mycontroller {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 	}
+	//view fedd back by coachid 
 	
+	@GetMapping("/viewDataFeedback/{id}")
+	public ResponseEntity<List<Feedback>> viewDataFeedbackbyid(@PathVariable long id){
+		try {
+			List<Feedback> data=ss.getAllFeedbackbycoachid(id);
+			return ResponseEntity.ok(data);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+	}
 	@PostMapping("/login")
 	public ResponseEntity<?> loginUser(
 	        @RequestBody LoginRequest request,
@@ -174,7 +193,9 @@ public class Mycontroller {
 			Admin admin = ss.addminsign(request.getEmail(), request.getPassword());
 			if (admin != null) {
 				session.setAttribute("auser", admin);
-				
+				System.out.println("Session ID: " + session.getId());
+				System.out.println("Session ID by couch: " + session.getId());
+				System.out.println("Attributes: " + session.getAttribute("auser"));
 				return ResponseEntity.ok(admin);
 			} 
 		}
@@ -183,7 +204,11 @@ public class Mycontroller {
 			Coach coach = ss.coachsign(request.getEmail(), request.getPassword());
 			if (coach != null) {
 				session.setAttribute("cuser", coach);
-		
+				session.setAttribute("couch", "Session cosch");
+				System.out.println("Session ID: " + session.getId());
+				System.out.println("Session ID by couch: " + session.getId());
+				System.out.println("Attributes: " + session.getAttribute("cuser"));
+
 				return ResponseEntity.ok(coach);
 			} 
 		}
@@ -243,7 +268,162 @@ public class Mycontroller {
 		 return ResponseEntity.ok(true);
 	}
 
+	@PostMapping("/viewDataFeedback/{id}")
+	public ResponseEntity<String> addcomplain(@RequestBody Feedback Feed,@PathVariable long id){
+		try {
+			System.out.println("Atheid id is :"+id);
+			ss.addComplain(Feed,id);
+			
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body("Feedback Add");
+		} catch (Exception e) {
+			System.out.println(e);
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body("Fail to add");
+		} 
+	}
 
+	@GetMapping("/viewDataAthletCoach/{id}")
+	public ResponseEntity<List<Athelet>> AtheletCoach(@PathVariable long id){
+		try {
+			List<Athelet> data=ss.getAllatheletbycouchid(id);
+			System.out.println(data.size());
+			return ResponseEntity.ok(data);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+	}
 
+	//plan schedule
+	
+	@PostMapping("/addPlan/{id}")
+	public ResponseEntity<String> addPlan(
+	        @RequestBody Traningplan feed,
+	        @PathVariable long id) {
+
+	    try {
+	        System.out.println("Coach id is: " + id);
+	        ss.addplan(feed, id);
+	        return ResponseEntity.status(HttpStatus.CREATED)
+	                .body("Plan added successfully");
+
+	    } catch (RuntimeException e) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                .body(e.getMessage());
+
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+	                .body("Failed to add plan");
+	    }
+	}
+
+	//for coach plans see
+	@GetMapping("/viewDataTraningplan/{id}")
+	public ResponseEntity<List<Traningplan>> viewDataTraningplan(@PathVariable long id){
+		try {
+			List<Traningplan> data=ss.getAllTraningplan(id);
+			return ResponseEntity.ok(data);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+	}
+	@DeleteMapping("/viewDataTraningplan/{id}")
+	public ResponseEntity<?> deleteplanbyid(@PathVariable long id){
+		try {
+			ss.deleteplanbyid(id);
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body("delete the plan");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+	}
+	
+	@PutMapping("/viewDataTraningplan/{id}")
+	public ResponseEntity<?> editplanbyid(@PathVariable long id,@RequestBody Traningplan t){
+		try {
+			ss.updateplanbyid(id,t);
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body("plan updated");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+	}
+	//addworkdrill
+	@PostMapping("/addwork/{id}")
+	public ResponseEntity<String> addwork(
+	        @RequestBody Workdirl feed,
+	        @PathVariable long id) {
+
+	    try {
+	        System.out.println("plan id is: " + id);
+	        ss.addworkdril(feed, id);
+	        return ResponseEntity.status(HttpStatus.CREATED)
+	                .body("work added successfully");
+
+	    } catch (RuntimeException e) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                .body(e.getMessage());
+
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+	                .body("Failed to add work");
+	    }
+	}
+//add the performance
+	@PostMapping("/addDataPerformancelog/{id}/{wid}")
+	public ResponseEntity<String> addperformance(
+	        @RequestBody Performancelog feed,@PathVariable long wid,
+	        @PathVariable long id) {
+
+	    try {
+	        System.out.println("plan id is: " + id);
+	        ss.addPerformancedata(feed, id,wid);
+	        return ResponseEntity.status(HttpStatus.CREATED)
+	                .body("Performance added successfully");
+
+	    } catch (RuntimeException e) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                .body(e.getMessage());
+
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+	                .body("Failed to add performance");
+	    }
+	}
+//find the performance by coachid
+	@GetMapping("/viewDataPerformancelog/{id}")
+	public ResponseEntity<List<Performancelog>> viewDataPerformancelogbyid(@PathVariable long id){
+		try {
+			List<Performancelog> data=ss.getPerformancelogById(id);
+			return ResponseEntity.ok(data);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+	}
+	@GetMapping("/viewDataPerformancelogAthid/{id}")
+	public ResponseEntity<List<Performancelog>> viewDataPerformancelogbyatheletid(@PathVariable long id){
+		try {
+			List<Performancelog> data=ss.getPerformancelogByAtheletId(id);
+			return ResponseEntity.ok(data);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+	}
+
+@PostMapping("/addrequest/{id}")
+public ResponseEntity<String> addrequest(@RequestBody Requestforacoach req,@PathVariable long id){
+	try {
+		ss.addrequest(req, id);
+		return ResponseEntity.status(HttpStatus.CREATED).body("Request added successfully");
+	} catch (Exception e) {
+		 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+	                .body("Failed to add Request");
+	}
+}
+@GetMapping("/viewrequest")
+public ResponseEntity<?> viewrequest(){
+	try {
+		List<Requestforacoach> data=ss.viewrequest();
+		return ResponseEntity.ok(data);
+	} catch (Exception e) {
+		 return ResponseEntity.ok(null);
+	}
+}
 
 }

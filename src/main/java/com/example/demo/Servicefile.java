@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class Servicefile {
+	@Autowired
+RequestRepo rdr;	
 @Autowired
 Adminrepo adr;
 @Autowired
@@ -67,14 +70,31 @@ public List<Athelet> getAllAthelet(){
 public List<Traningplan> getAllTraningplan(){
 	return tdr.findAll();
 }
+public List<Traningplan> getAllTraningplan(long id){
+	List<Traningplan> list=tdr.findByCoachid_Coachid(id);
+	return list;
+}
+
 public List<Workdirl> getAllWorkdril(){
 	return wdr.findAll();
+}
+public List<Workdirl> getAllWorkdrilByCoachid(long id){
+	return wdr.findByPlan_Coachid_Coachid(id);
 }
 public List<Feedback> getAllFeedback(){
 	return fdr.findAll();
 }
+public List<Feedback> getAllFeedbackbycoachid(long id){
+	
+	return fdr.findByAthid_Coachid_Coachid(id);
+}
+
 public List<Performancelog> getAllPerformlog(){
 	return pdr.findAll();
+}
+public List<Performancelog> getPerformancelogByAtheletId(long id){
+	
+	return pdr.findByAthid_Athid(id);
 }
 
 public List<Coach> getAllCoach(){
@@ -86,6 +106,21 @@ Optional<Athelet> getAllAthelet(long id){
 Optional<Coach> getAllCoach(long id){
 	return chr.findById(id);
 }
+public List<Athelet> getAllatheletbycouchid(long id){
+	
+	List<Athelet> a=athr.findByCoachid_Coachid(id);
+	System.out.println(a.size());
+	return  a;
+}
+public void deleteplanbyid(long id) {
+	if (tdr.existsById(id)) {
+		tdr.deleteById(id);
+	}else {
+		System.out.println("plan id not found");
+	}
+	
+}
+
 
 public void deletecoachbyid(long id) {
 	if (chr.existsById(id)) {
@@ -106,6 +141,15 @@ public Coach updatecoachbyid(long id,Coach c){
 	return chr.save(ch);
 	
 }
+public Traningplan updateplanbyid(long id,Traningplan c){
+	Traningplan ch=tdr.findById(id).orElseThrow(()->new RuntimeException("Id not found"));
+	ch.setEnddate(c.getEnddate());
+	ch.setPlanname(c.getPlanname());
+	ch.setPlantype(c.getPlantype());
+	ch.setStartdate(c.getStartdate());
+	return tdr.save(ch);
+	
+}
 
 public void Assigendid(long aid,long cid) {
 	
@@ -117,10 +161,42 @@ public void Assigendid(long aid,long cid) {
 		athr.save(a);
 	
 }
-//public Athelet getProfile(String email) {
-//    return athr
-//            .findByEmail(email)
-//            .orElseThrow(() ->
-//                new RuntimeException("User not found"));
-//}
+public void addComplain(Feedback f,long id) {
+	Athelet a=athr.findById(id).orElseThrow(()->new RuntimeException("Athelet not found"));
+	f.setAthid(a);
+	 fdr.save(f);
+}
+public void addplan(Traningplan plan,long id) {
+	Coach c=chr.findById(id).orElseThrow(()->new RuntimeException("Coach not found"));
+	plan.setCoachid(c);
+	tdr.save(plan);
+}
+public void addworkdril(Workdirl plan,long id) {
+	Traningplan c=tdr.findById(id).orElseThrow(()->new RuntimeException("Coach not found"));
+	plan.setPlan(c);
+	wdr.save(plan);
+}
+public void addPerformancedata(Performancelog per,long id,long wid) {
+	Athelet a=athr.findById(id).orElseThrow(()->new RuntimeException("Athelet not found"));
+	Workdirl w=wdr.findById(wid).orElseThrow(()->new RuntimeException("Workdril not found"));
+	LocalDate date= LocalDate.now();
+	per.setDate(date);
+	per.setAthid(a);
+	per.setWorkid(w);
+	pdr.save(per);
+}
+
+public List<Performancelog> getPerformancelogById(long id) {
+	return pdr.findByAthid_Coachid_coachid(id);
+	
+}
+public void addrequest(Requestforacoach req,long id) {
+	Athelet a=athr.findById(id).orElseThrow(()->new RuntimeException("Athelet not found"));
+	
+	req.setAthid(a);
+rdr.save(req);
+}
+public List<Requestforacoach> viewrequest(){
+	return rdr.findAll();
+}
 }
