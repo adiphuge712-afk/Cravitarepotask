@@ -65,6 +65,11 @@
 			<artifactId>mysql-connector-j</artifactId>
 		</dependency>
 
+	<dependency>
+    <groupId>org.postgresql</groupId>
+    <artifactId>postgresql</artifactId>
+    <version>42.6.0</version> <!-- latest stable -->
+</dependency>
 
 		
 	</dependencies>
