@@ -14,13 +14,18 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.DTO.LoginResponse_admin;
+import com.example.demo.DTO.LoginResponse_athelet;
+import com.example.demo.DTO.LoginResponse_coach;
+import com.example.demo.JwtUtil.jwtutil;
+
 import jakarta.servlet.http.HttpSession;
 
 @RestController
 //@CrossOrigin(origins = "http://localhost:5173")
 public class Mycontroller {
-//	@Autowired
-//	JwtUtil jwtUtil;
+@Autowired
+jwtutil jwt;
 	@Autowired
 	Servicefile ss;
 	@GetMapping("/")
@@ -192,24 +197,35 @@ public class Mycontroller {
 			// 1️Check Admin
 			Admin admin = ss.addminsign(request.getEmail(), request.getPassword());
 			if (admin != null) {
+				String token = jwt.generateToken(request.getEmail());
+				System.out.println("Token for admin is: "+token);
 				session.setAttribute("auser", admin);
 				System.out.println("Session ID: " + session.getId());
-				System.out.println("Session ID by couch: " + session.getId());
+				System.out.println("Session ID by admin: " + session.getId());
 				System.out.println("Attributes: " + session.getAttribute("auser"));
-				return ResponseEntity.ok(admin);
+				LoginResponse_admin response = new LoginResponse_admin();
+			    response.setToken(token);
+			    response.setAdmin(admin);
+				return ResponseEntity.ok(response);
 			} 
 		}
 	    else if (request.getRole().equals("Coach")) {
 			// 2️Check Coach
 			Coach coach = ss.coachsign(request.getEmail(), request.getPassword());
 			if (coach != null) {
+				String token = jwt.generateToken(request.getEmail());
+				System.out.println("Token for coach is: "+token);
 				session.setAttribute("cuser", coach);
 				session.setAttribute("couch", "Session cosch");
 				System.out.println("Session ID: " + session.getId());
 				System.out.println("Session ID by couch: " + session.getId());
 				System.out.println("Attributes: " + session.getAttribute("cuser"));
-
-				return ResponseEntity.ok(coach);
+				 LoginResponse_coach response = new LoginResponse_coach();
+				    response.setToken(token);
+				    response.setCoach(coach);
+				
+				
+				return ResponseEntity.ok(response);
 			} 
 		}
 		else if (request.getRole().equals("Athelet")) {
@@ -218,11 +234,17 @@ public class Mycontroller {
 			System.out.println(athlete.getName());//it give me right value aditya its not the null value 
 			
 			if (athlete != null) {
+				String token = jwt.generateToken(request.getEmail());
+				System.out.println("Token for athelet is: "+token);
 				session.setAttribute("athuser", athlete);
 				System.out.println("Session ID: " + session.getId());
 				System.out.println("Attributes: " + session.getAttribute("athuser"));
 
-				return ResponseEntity.ok(athlete);
+				 LoginResponse_athelet response = new LoginResponse_athelet();
+				    response.setToken(token);
+				    response.setAthelet(athlete);
+				
+				return ResponseEntity.ok(response);
 			} 
 		}
 		return ResponseEntity.ok(null);
