@@ -197,7 +197,7 @@ jwtutil jwt;
 			// 1️Check Admin
 			Admin admin = ss.addminsign(request.getEmail(), request.getPassword());
 			if (admin != null) {
-				String token = jwt.generateToken(request.getEmail());
+				String token = jwt.generateTokenfor_Admin(admin);
 				System.out.println("Token for admin is: "+token);
 				session.setAttribute("auser", admin);
 				System.out.println("Session ID: " + session.getId());
@@ -213,7 +213,7 @@ jwtutil jwt;
 			// 2️Check Coach
 			Coach coach = ss.coachsign(request.getEmail(), request.getPassword());
 			if (coach != null) {
-				String token = jwt.generateToken(request.getEmail());
+				String token = jwt.generateTokenfor_Coach(coach);
 				System.out.println("Token for coach is: "+token);
 				session.setAttribute("cuser", coach);
 				session.setAttribute("couch", "Session cosch");
@@ -234,7 +234,7 @@ jwtutil jwt;
 			System.out.println(athlete.getName());//it give me right value aditya its not the null value 
 			
 			if (athlete != null) {
-				String token = jwt.generateToken(request.getEmail());
+				String token = jwt.generateTokenforathelet(athlete);
 				System.out.println("Token for athelet is: "+token);
 				session.setAttribute("athuser", athlete);
 				System.out.println("Session ID: " + session.getId());

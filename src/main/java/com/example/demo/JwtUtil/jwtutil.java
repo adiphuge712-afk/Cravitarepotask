@@ -1,13 +1,21 @@
 package com.example.demo.JwtUtil;
 
 
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
+import java.security.Key;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
-import java.util.Date;
+import com.example.demo.Admin;
+import com.example.demo.Athelet;
+import com.example.demo.Coach;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
 @Component
 public class jwtutil {
@@ -24,6 +32,7 @@ public class jwtutil {
     }
 
     public String generateToken(String email) {
+    	
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
@@ -31,7 +40,41 @@ public class jwtutil {
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
+    
+    public String generateTokenforathelet(Athelet user) {
+    	Map<String, Object> claims = new HashMap<>();
+    	claims.put("user", user);
+        return Jwts.builder()
+        		.setClaims(claims)
+                .setSubject(user.getEmail())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
 
+    public String generateTokenfor_Coach(Coach user) {
+    	Map<String, Object> claims = new HashMap<>();
+    	claims.put("user", user);
+        return Jwts.builder()
+        		.setClaims(claims)
+                .setSubject(user.getEmail())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+    public String generateTokenfor_Admin(Admin user) {
+    	Map<String, Object> claims = new HashMap<>();
+    	claims.put("user", user);
+        return Jwts.builder()
+        		.setClaims(claims)
+                .setSubject(user.getEmail())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
     public String extractEmail(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSignKey())
