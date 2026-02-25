@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -168,6 +169,20 @@ jwtutil jwt;
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 	}
+	
+	
+	@GetMapping("/viewDataWorkdrilByTodaysdateandCoachid/{id}")
+	public ResponseEntity<List<Workdirl>> viewDataWorkdrilByTodaysdate(@PathVariable long id){
+		try {
+			LocalDate date=LocalDate.now();
+			List<Workdirl> data=ss.getallworkdril_by_todays_date(date,id);
+			return ResponseEntity.ok(data);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+	}
+	
+	
 	@GetMapping("/viewDataFeedback")
 	public ResponseEntity<List<Feedback>> viewDataFeedback(){
 		try {

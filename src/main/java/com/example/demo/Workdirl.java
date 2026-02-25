@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,7 +27,8 @@ public class Workdirl {
 	private long duration;
 	@Column
 	private String intencity;
-	
+	@Column
+	private LocalDate startdate;
 	@ManyToOne
 	@JoinColumn(name = "planid")
 	private Traningplan plan;
@@ -68,6 +71,14 @@ public class Workdirl {
 
 	public void setPlan(Traningplan plan) {
 		this.plan = plan;
+	}
+
+	public LocalDate getStartdate() {
+		return startdate;
+	}
+
+	public void setStartdate(LocalDate startdate) {
+		this.startdate = startdate;
 	}
 	
 	

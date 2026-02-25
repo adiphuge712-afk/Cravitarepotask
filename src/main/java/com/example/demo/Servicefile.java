@@ -172,8 +172,10 @@ public void addplan(Traningplan plan,long id) {
 	tdr.save(plan);
 }
 public void addworkdril(Workdirl plan,long id) {
+	LocalDate date=LocalDate.now();
 	Traningplan c=tdr.findById(id).orElseThrow(()->new RuntimeException("Coach not found"));
 	plan.setPlan(c);
+	plan.setStartdate(date);
 	wdr.save(plan);
 }
 public void addPerformancedata(Performancelog per,long id,long wid) {
@@ -199,4 +201,12 @@ rdr.save(req);
 public List<Requestforacoach> viewrequest(){
 	return rdr.findAll();
 }
+
+
+public List<Workdirl> getallworkdril_by_todays_date(LocalDate date,long id){
+	return wdr.findByPlan_Coachid_CoachidAndStartdate(id, date);
+	
+}
+
+
 }
