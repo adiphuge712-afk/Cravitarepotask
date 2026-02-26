@@ -207,6 +207,10 @@ public List<Workdirl> getallworkdril_by_todays_date(LocalDate date,long id){
 	return wdr.findByPlan_Coachid_CoachidAndStartdate(id, date);
 	
 }
+public List<Workdirl> getallworkdrilBydate(LocalDate date,long id){
+	return wdr.findByPlan_Coachid_CoachidAndStartdate(id,date);
+	
+}
 
 
 }

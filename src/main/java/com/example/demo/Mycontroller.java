@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.DTO.LoginResponse_admin;
@@ -159,6 +161,17 @@ jwtutil jwt;
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 	}
+
+//for athelet date vise shechedule check	
+	@GetMapping("/viewDataWorkdrilByDate/{id}")
+	public ResponseEntity<List<Workdirl>> viewDataWorkdrilBydate(@RequestParam LocalDate date,@PathVariable long id){
+		try {
+			List<Workdirl> data=ss.getallworkdrilBydate(date,id);
+			return ResponseEntity.ok(data);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+	}
 //by coach id
 	@GetMapping("/viewDataWorkdrilByCoachid/{id}")
 	public ResponseEntity<List<Workdirl>> viewDataWorkdrilByCoachid(@PathVariable long id){
@@ -174,7 +187,7 @@ jwtutil jwt;
 	@GetMapping("/viewDataWorkdrilByTodaysdateandCoachid/{id}")
 	public ResponseEntity<List<Workdirl>> viewDataWorkdrilByTodaysdate(@PathVariable long id){
 		try {
-			LocalDate date=LocalDate.now();
+			LocalDate date=LocalDate.now(ZoneId.of("Asia/Kolkata"));
 			List<Workdirl> data=ss.getallworkdril_by_todays_date(date,id);
 			return ResponseEntity.ok(data);
 		} catch (Exception e) {
