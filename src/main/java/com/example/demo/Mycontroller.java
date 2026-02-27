@@ -436,6 +436,46 @@ jwtutil jwt;
 	                .body("Failed to add performance");
 	    }
 	}
+	
+	@PutMapping("/updatePerformancelog/{wid}/{aid}")
+	public ResponseEntity<String> updateperformance(@RequestBody Performancelog data,@PathVariable long wid,
+	        @PathVariable long aid) {
+
+	    try {
+	        System.out.println("plan id is: " + data);
+	        ss.updatePerformancedata(data.getCompletestatus(),aid,wid);
+	        return ResponseEntity.status(HttpStatus.CREATED)
+	                .body("Performance added successfully");
+
+	    } catch (RuntimeException e) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                .body(e.getMessage());
+
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+	                .body("Failed to add performance");
+	    }
+	}
+	//for athelet to set the default complete
+	@PutMapping("/updatePerformancelogs/{wid}/{aid}")
+	public ResponseEntity<String> updateperformance(@RequestParam String data,@PathVariable long wid,
+	        @PathVariable long aid) {
+
+	    try {
+	        System.out.println("plan id is: " + data);
+	        ss.updatePerformancedata(data,aid,wid);
+	        return ResponseEntity.status(HttpStatus.CREATED)
+	                .body("Performance added successfully");
+
+	    } catch (RuntimeException e) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                .body(e.getMessage());
+
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+	                .body("Failed to add performance");
+	    }
+	}
 //find the performance by coachid
 	@GetMapping("/viewDataPerformancelog/{id}")
 	public ResponseEntity<List<Performancelog>> viewDataPerformancelogbyid(@PathVariable long id){

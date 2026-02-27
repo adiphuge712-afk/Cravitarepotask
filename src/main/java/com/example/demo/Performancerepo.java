@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface Performancerepo extends JpaRepository<Performancelog, Long> {
 List<Performancelog> findByAthid_Coachid_coachid(Long id);
 List<Performancelog> findByAthid_Athid(Long id);
+Performancelog findByAthid_AthidAndWorkid_Workid(Long id,Long Atid);
+Performancelog findByWorkid_Workid(Long id);
 }

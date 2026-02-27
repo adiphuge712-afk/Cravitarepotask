@@ -31,6 +31,15 @@ public class Performancelog {
 	@ManyToOne
 	@JoinColumn(name = "workid")
 	private Workdirl workid;
+	@Column
+	private String completestatus;
+	
+	public String getCompletestatus() {
+		return completestatus;
+	}
+	public void setCompletestatus(String completestatus) {
+		this.completestatus = completestatus;
+	}
 	public long getLogid() {
 		return logid;
 	}

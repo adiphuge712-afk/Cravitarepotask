@@ -178,15 +178,66 @@ public void addworkdril(Workdirl plan,long id) {
 	plan.setStartdate(date);
 	wdr.save(plan);
 }
-public void addPerformancedata(Performancelog per,long id,long wid) {
-	Athelet a=athr.findById(id).orElseThrow(()->new RuntimeException("Athelet not found"));
-	Workdirl w=wdr.findById(wid).orElseThrow(()->new RuntimeException("Workdril not found"));
-	LocalDate date= LocalDate.now();
-	per.setDate(date);
-	per.setAthid(a);
-	per.setWorkid(w);
-	pdr.save(per);
+public void addPerformancedata(Performancelog per,long athid,long workid) {
+//	Athelet a=athr.findById(id).orElseThrow(()->new RuntimeException("Athelet not found"));
+//	Workdirl w=wdr.findById(wid).orElseThrow(()->new RuntimeException("Workdril not found"));
+//	LocalDate date= LocalDate.now();
+//	per.setDate(date);
+//	per.setAthid(a);
+//	per.setWorkid(w);
+//	pdr.save(per);
+	 Performancelog existing =
+	            pdr.findByAthid_AthidAndWorkid_Workid(athid, workid);
+
+	    Athelet athlete = athr.findById(athid)
+	            .orElseThrow(() -> new RuntimeException("Athlete not found"));
+
+	    Workdirl work = wdr.findById(workid)
+	            .orElseThrow(() -> new RuntimeException("Workdril not found"));
+
+	    if (existing != null) {
+
+	        // 🔄 UPDATE existing row
+	        existing.setCompletestatus(per.getCompletestatus());
+	        existing.setPerformancematrix(per.getPerformancematrix());
+	        existing.setFatiquelevel(per.getFatiquelevel());
+	        existing.setDate(LocalDate.now());
+	        pdr.save(existing);
+
+	    } else {
+
+	        // ➕ CREATE new row
+	        per.setAthid(athlete);
+	        per.setWorkid(work);
+	        per.setDate(LocalDate.now());
+	        pdr.save(per);
+	    }
+	
+	
 }
+
+public void updatePerformancedata(String data,long workid,long athid) {
+
+    Performancelog perform =pdr.findByAthid_AthidAndWorkid_Workid(athid, workid);
+    LocalDate date= LocalDate.now();
+    if (perform == null) {
+
+        Athelet athlete = athr.findById(athid)
+                .orElseThrow(() -> new RuntimeException("Athlete not found"));
+
+        Workdirl work = wdr.findById(workid)
+                .orElseThrow(() -> new RuntimeException("Work not found"));
+
+        perform = new Performancelog();
+        perform.setAthid(athlete);
+        perform.setWorkid(work);
+    }
+perform.setDate(date);
+    perform.setCompletestatus(data);
+    pdr.save(perform);
+    
+}
+
 
 public List<Performancelog> getPerformancelogById(long id) {
 	return pdr.findByAthid_Coachid_coachid(id);
