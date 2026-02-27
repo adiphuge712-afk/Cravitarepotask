@@ -515,5 +515,14 @@ public ResponseEntity<?> viewrequest(){
 		 return ResponseEntity.ok(null);
 	}
 }
+@GetMapping("/viewrequestbyAdminid/{id}")
+public ResponseEntity<?> viewrequestByAdminid(@PathVariable long id){
+	try {
+		List<Requestforacoach> data=ss.viewrequestByadminid(id);
+		return ResponseEntity.ok(data);
+	} catch (Exception e) {
+		 return ResponseEntity.ok(null);
+	}
+}
 
 }
