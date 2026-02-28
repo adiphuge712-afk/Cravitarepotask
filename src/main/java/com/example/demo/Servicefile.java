@@ -255,7 +255,9 @@ public List<Requestforacoach> viewrequest(){
 public List<Requestforacoach> viewrequestByadminid(long id){
 	return rdr.findByAthid_Coachid_Adid_Adminid(id);
 }
-
+public Optional<Requestforacoach> viewrequestbyathelet(long id){
+	return rdr.findByAthid_Athid(id);
+}
 
 
 public List<Workdirl> getallworkdril_by_todays_date(LocalDate date,long id){

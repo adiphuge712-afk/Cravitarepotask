@@ -524,5 +524,14 @@ public ResponseEntity<?> viewrequestByAdminid(@PathVariable long id){
 		 return ResponseEntity.ok(null);
 	}
 }
-
+//by athelet id
+@GetMapping("/viewrequestbyathelet/{id}")
+public ResponseEntity<?> viewrequestbyathelet(@PathVariable long id){
+	try {
+		Optional<Requestforacoach> data=ss.viewrequestbyathelet(id);
+		return ResponseEntity.ok(data);
+	} catch (Exception e) {
+		 return ResponseEntity.ok(null);
+	}
+}
 }
