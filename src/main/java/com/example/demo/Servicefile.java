@@ -5,11 +5,18 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import com.example.demo.Principals.AdminPrinciple;
+import com.example.demo.Principals.AtheletPrincilpals;
+import com.example.demo.Principals.CoachPrinciple;
 
 
 @Service
-public class Servicefile {
+public class Servicefile implements UserDetailsService {
 	@Autowired
 RequestRepo rdr;	
 @Autowired
@@ -26,6 +33,54 @@ Performancerepo pdr;
 Traningplanrepo tdr;
 @Autowired
 Workdrilrepo wdr;
+
+@Override
+public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//	try {
+//		Athelet us = athr.findByEmail(username).orElseThrow(() -> new RuntimeException("Athelet suth Email not found"));
+//		System.out.println("admin username is "+us.getEmail());
+//		if(us!=null) {
+//			return new AtheletPrincilpals(us);
+//		}
+//	} catch (RuntimeException e) {
+//		Admin admin=adr.findByEmail(username).orElseThrow(() -> new RuntimeException("Admin auth Email not found"));
+//		System.out.println("admin username is "+admin.getEmail());
+//		if(admin!=null) {
+//			return new AdminPrinciple(admin);
+//		}
+//	}
+//	catch (Exception e) {
+//		Coach Coach=chr.findByEmail(username).orElseThrow(() -> new RuntimeException("Coach auth Email not found"));
+//		System.out.println("admin username is "+Coach.getEmail());
+//		if(Coach!=null) {
+//			return new CoachPrinciple(Coach);
+//		}
+//	}
+//	
+	try {
+	    Athelet athlete = athr.findByEmail(username)
+	            .orElseThrow(() -> new UsernameNotFoundException("Athlete not found"));
+	    return new AtheletPrincilpals(athlete);
+	}
+	catch (UsernameNotFoundException e1) {
+
+	    try {
+	        Admin admin = adr.findByEmail(username)
+	                .orElseThrow(() -> new UsernameNotFoundException("Admin not found"));
+	        return new AdminPrinciple(admin);
+	    }
+	    catch (UsernameNotFoundException e2) {
+
+	        Coach coach = chr.findByEmail(username)
+	                .orElseThrow(() -> new UsernameNotFoundException("Coach not found"));
+	        return new CoachPrinciple(coach);
+	    }
+	}
+//	 throw new UsernameNotFoundException("User or Admin with email " + username + " not found");
+	
+
+}
+
 public Admin addminsign(String email,String password) {
 
 	Admin c=adr.findByEmail(email).orElseThrow(()->new RuntimeException("Email not found"));
@@ -37,7 +92,7 @@ public Admin addminsign(String email,String password) {
 
 public Athelet Athlethsign(String email,String password) {
 
-	Athelet c=athr.findByEmail(email).orElseThrow(()->new RuntimeException("Email not found"));
+	Athelet c=athr.findByEmail(email).orElseThrow(()->new RuntimeException("Athelet Email not found"));
 	if(!c.getPassword().equals(password)) {
 		throw new RuntimeException("Password not found");
 	}
@@ -45,7 +100,7 @@ public Athelet Athlethsign(String email,String password) {
 }
 public Coach coachsign(String email,String password) {
 
-	Coach c=chr.findByEmail(email).orElseThrow(()->new RuntimeException("Email not found"));
+	Coach c=chr.findByEmail(email).orElseThrow(()->new RuntimeException("Coach Email not found"));
 	if(!c.getPassword().equals(password)) {
 		throw new RuntimeException("Password not found");
 	}
@@ -100,10 +155,10 @@ public List<Performancelog> getPerformancelogByAtheletId(long id){
 public List<Coach> getAllCoach(){
 	return chr.findAll();
 }
-Optional<Athelet> getAllAthelet(long id){
+public Optional<Athelet> getAllAthelet(long id){
 	return athr.findById(id);
 }
-Optional<Coach> getAllCoach(long id){
+public Optional<Coach> getAllCoach(long id){
 	return chr.findById(id);
 }
 public List<Athelet> getAllatheletbycouchid(long id){
@@ -268,6 +323,8 @@ public List<Workdirl> getallworkdrilBydate(LocalDate date,long id){
 	return wdr.findByPlan_Coachid_CoachidAndStartdate(id,date);
 	
 }
+
+
 
 
 }

@@ -25,6 +25,21 @@ public class Athelet {
 	private long age;
 	@Column
 	private String sporttype;
+	@Column
+	private String role;
+	
+	public Athelet() {
+		super();
+		this.role = "ATHELET";
+	}
+	
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = role;
+	}
+
 	@ManyToOne
 	
 	@JoinColumn(name = "coachid")

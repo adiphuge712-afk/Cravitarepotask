@@ -27,6 +27,22 @@ private String password;
 private String specialization;
 	@Column
 private long experience;
+	@Column
+	private String role;
+	
+public Coach() {
+		super();
+		this.role="COACH";
+	}
+
+public String getRole() {
+	return role;
+}
+
+public void setRole(String role) {
+	this.role = role;
+}
+
 public long getCoachid() {
 	return coachid;
 }

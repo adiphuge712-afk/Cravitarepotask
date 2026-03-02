@@ -20,7 +20,20 @@ public class Admin {
 	private String email;
 	@Column
 	private String password;
+	@Column
+	private String role;
 	
+	
+	public Admin() {
+		super();
+		this.role = "ADMIN";
+	}
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = role;
+	}
 	public long getAdminid() {
 		return adminid;
 	}

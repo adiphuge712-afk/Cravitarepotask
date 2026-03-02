@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.controllers;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -8,33 +8,51 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.Admin;
+import com.example.demo.Athelet;
+import com.example.demo.Coach;
+import com.example.demo.Feedback;
+import com.example.demo.LoginRequest;
+import com.example.demo.Performancelog;
+import com.example.demo.Requestforacoach;
+import com.example.demo.Servicefile;
+import com.example.demo.Traningplan;
+import com.example.demo.Workdirl;
 import com.example.demo.DTO.LoginResponse_admin;
 import com.example.demo.DTO.LoginResponse_athelet;
 import com.example.demo.DTO.LoginResponse_coach;
+import com.example.demo.DTO.ServiseRole;
 import com.example.demo.JwtUtil.jwtutil;
 
 import jakarta.servlet.http.HttpSession;
 
 @RestController
 //@CrossOrigin(origins = "http://localhost:5173")
+@RequestMapping("/athelet")
 public class Mycontroller {
 @Autowired
 jwtutil jwt;
 	@Autowired
 	Servicefile ss;
+	@Autowired
+	private AuthenticationManager authmaneger;
 	@GetMapping("/")
 	public ResponseEntity<?> test() {
 		try {
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body("Tested React ok");
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body("Tested React ok athelet");
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Fail");
 			
@@ -221,59 +239,97 @@ jwtutil jwt;
 	        @RequestBody LoginRequest request,
 	        HttpSession session) {
 
-	    if (request.getRole().equals("Admin")) {
+		if (request.getRole().equals("Admin")) {
 			// 1️Check Admin
-			Admin admin = ss.addminsign(request.getEmail(), request.getPassword());
-			if (admin != null) {
-				String token = jwt.generateTokenfor_Admin(admin);
-				System.out.println("Token for admin is: "+token);
-				session.setAttribute("auser", admin);
-				System.out.println("Session ID: " + session.getId());
-				System.out.println("Session ID by admin: " + session.getId());
-				System.out.println("Attributes: " + session.getAttribute("auser"));
-				LoginResponse_admin response = new LoginResponse_admin();
-			    response.setToken(token);
-			    response.setAdmin(admin);
-				return ResponseEntity.ok(response);
-			} 
-		}
-	    else if (request.getRole().equals("Coach")) {
+			try {
+				Authentication authentication = authmaneger.authenticate(
+						new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+				if (authentication.isAuthenticated()) {
+					Admin admin = ss.addminsign(request.getEmail(), request.getPassword());
+					
+					if (admin != null) {
+						ServiseRole sr=new ServiseRole();
+						sr.setRole(admin.getRole());
+						String token = jwt.generateTokenfor_Admin(admin);
+						System.out.println("Token for admin is: " + token);
+						session.setAttribute("auser", admin);
+						System.out.println("Session ID: " + session.getId());
+						System.out.println("Session ID by admin: " + session.getId());
+						System.out.println("Attributes: " + session.getAttribute("auser"));
+						LoginResponse_admin response = new LoginResponse_admin();
+						response.setToken(token);
+						response.setAdmin(admin);
+						return ResponseEntity.ok(response);
+					} else {
+						return ResponseEntity.ok("Fail to authenticate ...");
+					}
+				}
+			} catch (Exception e) {
+				return ResponseEntity.ok("Login fail...");
+			}
+		} else if (request.getRole().equals("Coach")) {
 			// 2️Check Coach
-			Coach coach = ss.coachsign(request.getEmail(), request.getPassword());
-			if (coach != null) {
-				String token = jwt.generateTokenfor_Coach(coach);
-				System.out.println("Token for coach is: "+token);
-				session.setAttribute("cuser", coach);
-				session.setAttribute("couch", "Session cosch");
-				System.out.println("Session ID: " + session.getId());
-				System.out.println("Session ID by couch: " + session.getId());
-				System.out.println("Attributes: " + session.getAttribute("cuser"));
-				 LoginResponse_coach response = new LoginResponse_coach();
-				    response.setToken(token);
-				    response.setCoach(coach);
-				
-				
-				return ResponseEntity.ok(response);
-			} 
-		}
-		else if (request.getRole().equals("Athelet")) {
-			// 3️ Check Athlete
-			Athelet athlete = ss.Athlethsign(request.getEmail(), request.getPassword());
-			System.out.println(athlete.getName());//it give me right value aditya its not the null value 
-			
-			if (athlete != null) {
-				String token = jwt.generateTokenforathelet(athlete);
-				System.out.println("Token for athelet is: "+token);
-				session.setAttribute("athuser", athlete);
-				System.out.println("Session ID: " + session.getId());
-				System.out.println("Attributes: " + session.getAttribute("athuser"));
+			try {
+				Authentication authentication = authmaneger.authenticate(
+						new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+				if (authentication.isAuthenticated()) {
+					Coach coach = ss.coachsign(request.getEmail(), request.getPassword());
+					
+					if (coach != null) {
+						ServiseRole sr=new ServiseRole();
+						sr.setRole(coach.getRole());
+						String token = jwt.generateTokenfor_Coach(coach);
+						System.out.println("Token for coach is: " + token);
+						session.setAttribute("cuser", coach);
+						session.setAttribute("couch", "Session cosch");
+						System.out.println("Session ID: " + session.getId());
+						System.out.println("Session ID by couch: " + session.getId());
+						System.out.println("Attributes: " + session.getAttribute("cuser"));
+						LoginResponse_coach response = new LoginResponse_coach();
+						response.setToken(token);
+						response.setCoach(coach);
 
-				 LoginResponse_athelet response = new LoginResponse_athelet();
-				    response.setToken(token);
-				    response.setAthelet(athlete);
-				
-				return ResponseEntity.ok(response);
-			} 
+						return ResponseEntity.ok(response);
+					} else {
+						return ResponseEntity.ok("Fail to authenticate ");
+					}
+				}
+			} catch (Exception e) {
+				return ResponseEntity.ok("Login fail...");
+			}
+		} else if (request.getRole().equals("Athelet")) {
+			// 3️ Check Athlete
+			try {
+				Authentication authentication = authmaneger.authenticate(
+						new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+				if (authentication.isAuthenticated()) {
+					
+					Athelet athlete = ss.Athlethsign(request.getEmail(), request.getPassword());
+					
+					System.out.println(athlete.getName());// it give me right value aditya its not the null value
+
+					if (athlete != null) {
+						ServiseRole sr=new ServiseRole();
+						sr.setRole(athlete.getRole());
+						String token = jwt.generateTokenforathelet(athlete);
+						System.out.println("Token for athelet is: " + token);
+						session.setAttribute("athuser", athlete);
+						System.out.println("Session ID: " + session.getId());
+						System.out.println("Attributes: " + session.getAttribute("athuser"));
+
+						LoginResponse_athelet response = new LoginResponse_athelet();
+						response.setToken(token);
+						response.setAthelet(athlete);
+
+						return ResponseEntity.ok(response);
+					}
+				} else {
+					return ResponseEntity.ok("Fail to authenticate ");
+				}
+			} catch (Exception e) {
+				return ResponseEntity.ok("Login fail...");
+			}
+
 		}
 		return ResponseEntity.ok(null);
 	}
