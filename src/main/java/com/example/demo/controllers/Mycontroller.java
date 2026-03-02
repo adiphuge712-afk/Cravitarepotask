@@ -190,6 +190,16 @@ jwtutil jwt;
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 	}
+	//for athelet date vise shechedule check date to date	
+		@GetMapping("/viewDataWorkdrilBydatetodate/{id}")
+		public ResponseEntity<List<Workdirl>> viewDataWorkdrilBydatetodate(@RequestParam LocalDate date,@RequestParam LocalDate date2,@PathVariable long id){
+			try {
+				List<Workdirl> data=ss.getallworkdrilBydatetodate(date,date2,id);
+				return ResponseEntity.ok(data);
+			} catch (Exception e) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+			}
+		} 
 //by coach id
 	@GetMapping("/viewDataWorkdrilByCoachid/{id}")
 	public ResponseEntity<List<Workdirl>> viewDataWorkdrilByCoachid(@PathVariable long id){

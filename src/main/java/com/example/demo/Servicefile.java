@@ -324,6 +324,11 @@ public List<Workdirl> getallworkdrilBydate(LocalDate date,long id){
 	
 }
 
+public List<Workdirl> getallworkdrilBydatetodate(LocalDate date, LocalDate date2, long id) {
+	
+	return wdr.findByStartdateBetweenAndPlan_Coachid_Coachid(date, date2, id);
+}
+
 
 
 

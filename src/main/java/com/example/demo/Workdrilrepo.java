@@ -10,5 +10,6 @@ public interface Workdrilrepo  extends JpaRepository<Workdirl, Long>{
 List<Workdirl> findByPlan_Coachid_Coachid(Long id);
 List<Workdirl> findByPlan_Coachid_CoachidAndStartdate(Long id,LocalDate date);
 List<Workdirl> findByStartdate(LocalDate date);
+List<Workdirl> findByStartdateBetweenAndPlan_Coachid_Coachid(LocalDate date1,LocalDate date2,Long id);
 
 }
