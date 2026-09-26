@@ -6,6 +6,9 @@ schedule and can request a coach. JWT authentication with server-side logout,
 object-level authorization, an email-based forgot-password flow, and live
 dashboard updates over Server-Sent Events.
 
+## Email Config 
+
+I am using the Render Free vertion for deployment thats why the Mail smtp not working on it but locally its working now i am start working on gmail api it will be work on free version of render
 ## Stack
 
 - Java 17, Spring Boot 4.0.1, Maven
